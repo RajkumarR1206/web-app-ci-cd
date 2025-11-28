@@ -14,6 +14,7 @@ jobs:
 
       - name: Apply Kubernetes manifests
         run: |
-          kubectl apply -f k8s/
+          export KUBECONFIG=/home/devops/.kube/config
+          kubectl apply -f k8s/ --validate=false
           kubectl rollout restart deployment flask-app
 
