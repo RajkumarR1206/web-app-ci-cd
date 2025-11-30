@@ -9,43 +9,45 @@ The solution includes:
 * Containerization using **Docker**
 * Image distribution via **Docker Hub**
 * Kubernetes deployment using **kubectl**
-* Zero-downtime updates using rolling deployments
-* Local Kubernetes cluster using **Minikube / K8s on Ubuntu**
+* Rolling deployments (zero downtime)
+* Local Kubernetes cluster using **Minikube / Ubuntu K8s**
 
-This project replicates real-world DevOps workflows used in production environments.
+This project replicates real-world DevOps workflows used in production.
 
 ---
 
-## 🚀 **Architecture Overview**
+##  **Architecture Overview**
 
 ```
-Developer Pushes Code → GitHub Actions CI → Docker Build → Docker Hub
-                                            ↓
-                                       CD Deployment
-                                            ↓
-                                      Kubernetes Cluster
+Developer Pushes Code 
+        ↓
+GitHub Actions CI → Docker Build → Docker Hub
+        ↓
+GitHub Actions CD → Kubernetes Deployment
+        ↓
+Updated Application Running in Cluster
 ```
 
 ---
 
-## 🧰 **Tech Stack**
+##  **Tech Stack**
 
-| Component           | Technology Used       |
-| ------------------- | --------------------- |
-| Backend Application | Python Flask          |
-| Version Control     | Git + GitHub          |
-| CI Pipeline         | GitHub Actions        |
-| Containerization    | Docker                |
-| Image Registry      | Docker Hub            |
-| Deployment          | Kubernetes (kubectl)  |
-| Local Cluster       | Minikube / Ubuntu K8s |
-| OS                  | WSL2/Ubuntu           |
+| Component        | Technology               |
+| ---------------- | ------------------------ |
+| Backend          | Python Flask             |
+| Version Control  | Git + GitHub             |
+| CI Pipeline      | GitHub Actions           |
+| Containerization | Docker                   |
+| Image Registry   | Docker Hub               |
+| Deployment       | Kubernetes               |
+| Local Cluster    | Minikube / Ubuntu / Kind |
+| OS               | WSL2 + Ubuntu            |
 
 ---
 
-## 📦 **Project Structure**
+##  **Project Structure**
 
-```bash
+```
 flask-ci-cd/
 │
 ├── app.py               # Flask application
@@ -56,50 +58,52 @@ flask-ci-cd/
 │   └── service.yaml     # Kubernetes Service (NodePort)
 │
 └── .github/workflows/
-    ├── ci.yml          # CI Pipeline – Build & Push Docker Image
-    └── cd.yml          # CD Pipeline – Deploy to Kubernetes
+    ├── ci.yml           # CI Pipeline – Build & Push Docker Image
+    └── cd.yml           # CD Pipeline – Deploy to Kubernetes
 ```
 
 ---
 
 ##  **How the CI/CD Pipeline Works**
 
-### **1. CI — Build & Push Docker Image**
+### **1. CI Pipeline — Build & Push Docker Image**
 
 GitHub Actions automatically:
 
-* Pulls latest code
-* Installs dependencies
-* Builds Docker image
-* Tags image as `latest`
-* Pushes image to Docker Hub
+1. Pulls latest code
+2. Installs dependencies
+3. Builds Docker image
+4. Tags image as `latest`
+5. Pushes image to Docker Hub
 
-### **2. CD — Deploy to Kubernetes**
+---
 
-After pushing the image:
+### **2. CD Pipeline — Deploy to Kubernetes**
 
-* GitHub Actions connect to the Kubernetes cluster
-* Applies updated deployment file
-* Triggers a rolling restart
-* Pulls new image version automatically
+After the image is pushed:
+
+1. GitHub Actions connects to the Kubernetes cluster
+2. Applies Kubernetes manifests
+3. Triggers a rolling update
+4. New pods automatically pull the latest image
 
 ---
 
 ##  **Docker Instructions**
 
-### Build image manually (optional)
+**Build image manually (optional)**
 
 ```bash
 docker build -t flask-ci-cd-app .
 ```
 
-### Tag for Docker Hub
+**Tag for Docker Hub**
 
 ```bash
 docker tag flask-ci-cd-app:latest <dockerhub-username>/flask-ci-cd-app:latest
 ```
 
-### Push to Docker Hub
+**Push to Docker Hub**
 
 ```bash
 docker push <dockerhub-username>/flask-ci-cd-app:latest
@@ -107,33 +111,33 @@ docker push <dockerhub-username>/flask-ci-cd-app:latest
 
 ---
 
-## ☸️ **Kubernetes Deployment**
+##  **Kubernetes Deployment**
 
-### Apply Deployment
+**Apply Deployment**
 
 ```bash
 kubectl apply -f k8s/deployment.yaml
 ```
 
-### Apply Service
+**Apply Service**
 
 ```bash
 kubectl apply -f k8s/service.yaml
 ```
 
-### Restart Deployment
+**Restart Deployment**
 
 ```bash
 kubectl rollout restart deployment flask-app
 ```
 
-### Check Pods
+**Check Pods**
 
 ```bash
 kubectl get pods
 ```
 
-### Check Service
+**Check Service**
 
 ```bash
 kubectl get svc flask-service
@@ -141,26 +145,29 @@ kubectl get svc flask-service
 
 ---
 
-## **Accessing the Application**
+##  **Accessing the Application**
 
-### Option 1: Using `kubectl port-forward`
-
-Works reliably on all systems:
+### **Option 1: With kubectl port-forward (recommended)**
 
 ```bash
 kubectl port-forward deployment/flask-app 5000:5000
 ```
 
-Visit in browser:
-👉 **[http://localhost:5000/](http://localhost:5000/)**
+Open browser:
 
-### Option 2: Using NodePort (if Minikube supports it)
+ [http://localhost:5000/](http://localhost:5000/)
+
+---
+
+### **Option 2: Using NodePort**
+
+If Minikube supports NodePort:
 
 ```bash
 minikube ip
 ```
 
-Access at:
+Access:
 
 ```
 http://<minikube-ip>:30001
@@ -168,72 +175,71 @@ http://<minikube-ip>:30001
 
 ---
 
-##  **Kubernetes Files**
+##  **Kubernetes Files Overview**
 
 ### **Deployment**
 
 * Deploys Flask app
-* Pulls image from Docker Hub
-* Always pulls latest image
+* Pulls latest Docker image
+* ImagePullPolicy: Always
 
 ### **Service**
 
-* Exposes application using NodePort
-* Port: `30001`
+* Exposes application
+* NodePort: **30001**
 
 ---
 
-##  **GitHub Actions Workflow (CI/CD)**
+##  **GitHub Actions Workflows**
 
-The pipeline:
+Your workflows:
 
-* Runs on every `push` to `main`
-* Logs in to Docker Hub
-* Builds & pushes the image
-* Applies Kubernetes deployment
-* Performs rolling update
+* `.github/workflows/ci.yml` → CI pipeline
+* `.github/workflows/cd.yml` → CD pipeline
 
-The workflow file is located at:
+They perform:
 
-```
-.github/workflows/ci-cd.yml
-```
+1. Build Docker image
+2. Login to Docker Hub
+3. Push image
+4. Connect to cluster
+5. Update Deployment
+6. Trigger Rolling Update
 
 ---
 
 ##  **Testing the Pipeline**
 
-To test the CI/CD end-to-end:
+Steps:
 
-1. Change anything in `app.py`
-
+1. Edit `app.py`
 2. Commit & push
+3. GitHub Actions will:
 
-3. GitHub Actions will :
-
-   * Build the Docker image
+   * Build image
    * Push to Docker Hub
-   * Restart Kubernetes deployment
+   * Restart Deployment
 
-4. Run:
+Check new pod:
 
 ```bash
 kubectl get pods
 ```
 
-You should see a new pod with the updated version.
+You should see a **new pod** running latest code.
 
 ---
 
-## **Future Enhancements**
+##  **Future Enhancements**
 
 You can extend this project with:
 
-* Helm charts
-* Ingress + TLS
+* Helm Charts
+* NGINX Ingress + TLS
 * Prometheus + Grafana monitoring
 * HashiCorp Vault for secrets
-* Terraform-based cluster provisioning
-* Canary deployments / Blue-Green
+* Terraform-managed Kubernetes cluster
+* Canary / Blue-Green deployments
 
 ---
+
