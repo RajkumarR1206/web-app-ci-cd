@@ -3,7 +3,7 @@
 # **Flask CI/CD Pipeline with Docker, GitHub Actions, and Kubernetes**
 
 This project demonstrates a complete **end-to-end CI/CD pipeline** for a containerized Flask web application.
-The solution includes:
+The solution includes:-
 
 * Automated builds and tests using **GitHub Actions**
 * Containerization using **Docker**
