@@ -1,6 +1,6 @@
 ---
 
-# **Flask CI/CD Pipeline with Docker, GitHub Actions, and Kubernetes**
+## Python Flask CI/CD Pipeline with Docker, GitHub Actions, and Kubernetes
 
 This project demonstrates a complete **end-to-end CI/CD pipeline** for a containerized Flask web application.
 The solution includes:-
@@ -27,6 +27,36 @@ GitHub Actions CD → Kubernetes Deployment
         ↓
 Updated Application Running in Cluster
 ```
+
+---
+
+## **Sample Output:**
+
+
+Github Actions workflow:
+
+<img width="1363" height="517" alt="github-action-flow" src="https://github.com/user-attachments/assets/b4ad71ba-1822-4e2e-880b-d24b2b854e48" />
+
+CI workflow:
+<img width="1347" height="599" alt="ci-flow" src="https://github.com/user-attachments/assets/c1d841bc-813f-424e-9ba9-a96767c87c96" />
+
+CD workflow:
+<img width="1353" height="561" alt="CD-flow" src="https://github.com/user-attachments/assets/3a457626-4006-4c48-9918-4af3442533f2" />
+
+Pushed into Docker hub:
+<img width="1298" height="582" alt="docker-hub" src="https://github.com/user-attachments/assets/bce645dd-baf7-4bd7-8876-1b7402a723c3" />
+
+Running using Self hosted runner: 
+<img width="921" height="219" alt="action-self-hosted-runner" src="https://github.com/user-attachments/assets/04c4f2f0-d693-4366-80a8-b80da7467cc2" />
+
+Pod details: 
+<img width="935" height="199" alt="pod-detail" src="https://github.com/user-attachments/assets/06996a5e-7c56-4b4f-acbe-547ba87bc915" />
+
+Flask app Result:
+
+<img width="844" height="293" alt="Flask-app-result" src="https://github.com/user-attachments/assets/b815173a-d58b-439c-a1ef-aa43d7d632e1" />
+
+
 
 ---
 
