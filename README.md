@@ -110,6 +110,8 @@ GitHub Actions automatically:
 
 ### **2. CD Pipeline — Deploy to Kubernetes**
 
+This project uses a self-hosted GitHub Actions runner running inside WSL2 (Ubuntu) to perform the CD deployment step.
+
 After the image is pushed:
 
 1. GitHub Actions connects to the Kubernetes cluster
